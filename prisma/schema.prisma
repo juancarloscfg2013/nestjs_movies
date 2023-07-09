@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Genre {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  Movies MovieGenre[]
+}
+
+model Movie {
+  id                Int     @id @default(autoincrement())
+  title             String  @unique
+  status            String?
+  tagline           String?
+  release_date      String?
+  poster_path       String?
+  overview          String? @db.Text()
+  original_title    String?
+  original_language String?
+  imdb_id           String?
+  homepage          String?
+  backdrop_path     String?
+
+  adult Boolean?
+  video Boolean?
+
+  vote_count Int?
+  budget     Int?
+  revenue    Int?
+  runtime    Int?
+
+  popularity   Decimal?
+  vote_average Decimal?
+
+  genres MovieGenre[]
+}
+
+model MovieGenre {
+  movie   Movie @relation(fields: [movieId], references: [id])
+  movieId Int
+  genre   Genre @relation(fields: [genreId], references: [id])
+  genreId Int
+
+  @@id([movieId, genreId])
+}
