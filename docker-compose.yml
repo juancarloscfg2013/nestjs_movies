@@ -12,6 +12,17 @@ services:
       - mysql
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.movie.alfredoacservices.com`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.backend-https-redirect.redirectscheme.scheme=websecure"
+      - "traefik.http.routers.backend.middlewares=backend-https-redirect"
+      - "traefik.http.routers.backend-secure.entrypoints=websecure"
+      - "traefik.http.routers.backend-secure.rule=Host(`api.movie.alfredoacservices.com`)"
+      - "traefik.http.routers.backend-secure.tls=true"
+      - "traefik.http.routers.backend-secure.tls.certresolver=letsencrypt"
 
   mysql:
     image: mysql:8
